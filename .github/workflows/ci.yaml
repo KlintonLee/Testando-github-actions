@@ -1,14 +1,18 @@
-name: ci-golang-workflow # nome do workflow
-on: [push] # Ao efetuar o push ele executará os jobs a seguir
+name: ci-golang-workflow
+on:
+  pull_request:
+    branches:
+      - develop
+strategy:
+  matrix:
+    abacaxi: ['1.14', '1.15']
 jobs:
-  check-application: # Nome do meu job
-    runs-on: ubuntu-latest # Onde eu quero executar os jobs
-    steps: # Quais as etapas
-      - uses: actions/checkout@v2 # Pega os dados do push e baixa na máquina ubuntu
-      - uses: actions/setup-go@v2 # Pepara o ambiente em Go
+  check-application:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
         with:
-          go-version: 1.15 # Versão do Go
-      - run: go test # Comando a ser executado
+          go-version: ${{ matrix.abacaxi }}
+      - run: go test
       - run: go run math.go
-      ## Quando queremos executar uma action usamos uses e quanto queremos executar
-      ## um comando, utilizamos o run.
